@@ -83,6 +83,7 @@ xml.Orders(pages: (@shipments.total_count/50.0).ceil) {
             xml.WeightUnits Spree::Config.shipstation_weight_units
             xml.Quantity    line.quantity
             xml.UnitPrice   line.price
+            xml.Location    variant.try(:stock_items).first.try(:shelf_location) || ""
 
             if variant.option_values.present?
               xml.Options {
