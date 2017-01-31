@@ -13,12 +13,12 @@ Spree::Shipment.class_eval do
     line_items.each_with_object({}) do |line, memo|
       if line.product.assembly?
         if line.part_line_items.any?
-          line.part_line_items.each do |ap|
-            add_to_memo(memo, ap.variant, ap.proportional_unit_price, ap.quantity)
+          line.part_line_items.each do |pli|
+            add_to_memo(memo, pli.variant, pli.proportional_unit_price, pli.quantity)
           end
         else
-          line.product.assemblies_parts.each do |ap|
-            add_to_memo(memo, ap.part, ap.proportional_unit_price, ap.count)
+          line.variant.parts_variants.each do |pv|
+            add_to_memo(memo, pv.part, pv.proportional_unit_price, pv.count)
           end
         end
       else
