@@ -7,4 +7,31 @@ Spree::Shipment.class_eval do
     joins(:order).where('(spree_shipments.updated_at > ? AND spree_shipments.updated_at < ?) OR (spree_orders.updated_at > ? AND spree_orders.updated_at < ?)',from, to, from, to)
   end
 
+  def variants_hash_for_export
+    # call product assembly method, then combine each variant since Shipstation wants
+    # each sku to appear only once
+    line_items.each_with_object({}) do |line, memo|
+      if line.product.assembly?
+        if line.part_line_items.any?
+          line.part_line_items.each do |ap|
+            add_to_memo(memo, ap.variant, ap.proportional_unit_price, ap.quantity)
+          end
+        else
+          line.product.assemblies_parts.each do |ap|
+            add_to_memo(memo, ap.part, ap.proportional_unit_price, ap.count)
+          end
+        end
+      else
+        add_to_memo(memo, line.variant, line.price, line.quantity)
+      end
+    end
+  end
+
+  def add_to_memo(memo, variant, price, quantity)
+    if quantity > 0
+      memo[variant] ||= { price: 0, quantity: 0 }
+      memo[variant][:price] = (memo[variant][:price]*memo[variant][:quantity] + quantity * price) / (memo[variant][:quantity] + quantity)
+      memo[variant][:quantity] += quantity
+    end
+  end
 end
