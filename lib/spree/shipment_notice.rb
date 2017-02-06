@@ -2,7 +2,7 @@ module Spree
   class ShipmentNotice
     attr_reader :error
 
-    def initialize(params) 
+    def initialize(params)
       @number   = params[:order_number]
       @tracking = params[:tracking_number]
     end
@@ -30,6 +30,7 @@ module Spree
         @shipment.reload.update_attribute(:state, 'shipped')
         @shipment.inventory_units.each &:ship!
         @shipment.touch :shipped_at
+        Spree::ShipmentMailer.shipped_email(shipment.id).deliver_later if Spree::Config.send_shipped_email
       end
 
       true
@@ -39,7 +40,7 @@ module Spree
       @error = I18n.t(:shipment_not_found, number: @number)
       false
     end
-    
+
     def handle_error(error)
       Rails.logger.error(error)
       @error = I18n.t(:import_tracking_error, error: error.to_s)
