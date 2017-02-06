@@ -30,7 +30,7 @@ module Spree
         @shipment.reload.update_attribute(:state, 'shipped')
         @shipment.inventory_units.each &:ship!
         @shipment.touch :shipped_at
-        Spree::ShipmentMailer.shipped_email(shipment.id).deliver_later if Spree::Config.send_shipped_email
+        Spree::ShipmentMailer.shipped_email(@shipment.id).deliver_later if Spree::Config.send_shipped_email
       end
 
       true
