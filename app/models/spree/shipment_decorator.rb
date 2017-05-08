@@ -14,7 +14,7 @@ Spree::Shipment.class_eval do
       if line.product.assembly?
         if line.part_line_items.any?
           line.part_line_items.each do |pli|
-            add_to_memo(memo, pli.variant, pli.proportional_unit_price, pli.quantity)
+            add_to_memo(memo, pli.variant, pli.proportional_unit_price, pli.quantity * line.quantity)
           end
         else
           line.variant.parts_variants.each do |pv|
