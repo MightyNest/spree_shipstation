@@ -96,6 +96,20 @@ xml.Orders(pages: (@shipments.total_count/50.0).ceil) {
             end
           }
         end
+        if order.respond_to?(:shipstation_bonus_items)
+          order.shipstation_bonus_items.each do |item|
+            xml.Item {
+              xml.SKU         item[:sku]
+              xml.Name        trim_field(item[:name], 200)
+              xml.ImageUrl    item[:image_url]
+              xml.Weight      item[:weight]
+              xml.WeightUnits Spree::Config.shipstation_weight_units
+              xml.Quantity    item[:quantity]
+              xml.UnitPrice   item[:price].round(2)
+              xml.Location    item[:location] || ''
+            }
+          end
+        end
       }
     }
   end
