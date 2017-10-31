@@ -1,8 +1,7 @@
 date_format = "%m/%d/%Y %H:%M"
 
-def address(xml, order, type)
+def address(xml, address, type, order)
   name    = "#{type.to_s.titleize}To"
-  address = order.send("#{type}_address")
 
   xml.__send__(name) {
     xml.Name       trim_field(address.full_name, 100)
@@ -69,8 +68,12 @@ xml.Orders(pages: (@shipments.total_count/50.0).ceil) {
 
       xml.Customer {
         xml.CustomerCode trim_field(order.email, 50)
-        address(xml, order, :bill)
-        address(xml, order, :ship)
+        address(xml, order.bill_address, :bill, order)
+        if shipment.respond_to?(:alternate_ship_address) && shipment.alternate_ship_address
+          address(xml, shipment.alternate_ship_address, :ship, order)
+        else
+          address(xml, order.ship_address, :ship, order)
+        end
       }
       xml.Items {
         shipment.variants_hash_for_export.each_pair do |variant, quantity_and_price|
@@ -97,7 +100,7 @@ xml.Orders(pages: (@shipments.total_count/50.0).ceil) {
           }
         end
         if order.respond_to?(:shipstation_bonus_items)
-          order.shipstation_bonus_items.each do |item|
+          order.shipstation_bonus_items(shipment).each do |item|
             xml.Item {
               xml.SKU         item[:sku]
               xml.Name        trim_field(item[:name], 200)
