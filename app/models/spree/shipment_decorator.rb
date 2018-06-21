@@ -1,13 +1,12 @@
 Spree::Shipment.class_eval do
   scope :exportable, -> {
-	joins(:order)
+  joins(:order)
     .where('spree_shipments.state != ?', 'pending')
-    .where("#{Spree::Order.table_name}.number not ilike 'D%'")
-    .where("#{Spree::Order.table_name}.completed_at > ?", Time.new(2017, 6, 15))
+    .where("#{Spree::Order.table_name}.completed_at > ?", Time.new(2018, 1, 1))
   }
 
   def self.between(from, to)
-    joins(:order).where('(spree_shipments.updated_at > ? AND spree_shipments.updated_at < ?) OR (spree_orders.updated_at > ? AND spree_orders.updated_at < ?)',from, to, from, to)
+    joins(:order).where('spree_orders.updated_at between ? AND ?', from, to)
   end
 
   def variants_hash_for_export
