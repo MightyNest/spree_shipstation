@@ -17,7 +17,7 @@ module Spree
     layout false
 
     def export
-      @shipments = Spree::Shipment.exportable.between(date_param(:start_date), date_param(:end_date)).page(params[:page]).per(50)
+      @shipments = Spree::Shipment.exportable.between(date_param(:start_date), date_param(:end_date)).page(params[:page]).per(20)
     end
 
     def shipnotify

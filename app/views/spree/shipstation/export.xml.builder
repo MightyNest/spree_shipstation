@@ -28,16 +28,16 @@ def trim_field(value, length)
 end
 
 xml.instruct!
-xml.Orders(pages: (@shipments.total_count/50.0).ceil) {
+xml.Orders(pages: (@shipments.total_count/20.0).ceil) {
   @shipments.each do |shipment|
     order = shipment.order
 
     xml.Order {
       xml.OrderID        shipment.id
       xml.OrderNumber    Spree::Config.shipstation_number == :order ? order.number : shipment.number
-      xml.OrderDate      (order.completed_at || order.created_at).strftime("%m/%d/%Y %I:%M %p")
+      xml.OrderDate      (order.completed_at || order.created_at).utc.strftime(date_format)
       xml.OrderStatus    shipment.state
-      xml.LastModified   [order.completed_at, shipment.updated_at].max.strftime(date_format)
+      xml.LastModified   [order.completed_at, shipment.updated_at].max.utc.strftime(date_format)
       xml.ShippingMethod shipment.shipping_method.try(:name)
       xml.OrderTotal     order.total
       xml.TaxAmount      order.additional_tax_total
