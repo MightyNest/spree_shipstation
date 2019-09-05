@@ -28,7 +28,7 @@ def trim_field(value, length)
 end
 
 xml.instruct!
-xml.Orders(pages: (@shipments.total_count/20.0).ceil) {
+xml.Orders(pages: ((1.0*@shipments.total_count)/@page_size).ceil) {
   @shipments.each do |shipment|
     order = shipment.order
 
