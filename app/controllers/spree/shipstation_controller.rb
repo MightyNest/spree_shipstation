@@ -32,6 +32,8 @@ module Spree
         order.save!
       end
 
+      Ns::Jobs::ShipmentShippedJob.perform_later(number)
+
       if notice.apply
         @text = 'success'
         respond_to do |format|
