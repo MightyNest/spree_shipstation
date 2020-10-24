@@ -32,7 +32,7 @@ module Spree
         order.save!
       end
 
-      Ns::Jobs::ShipmentShippedJob.perform_later(number)
+      Ns::Jobs::ShipmentShippedWorker.perform_async(number)
 
       if notice.apply
         @text = 'success'
