@@ -31,7 +31,7 @@ module Spree
         @shipment.inventory_units.each &:ship!
         @shipment.touch :shipped_at
 
-        Spree::ShipmentMailer.shipped_email(@shipment.id).deliver_later if Spree::Config.send_shipped_email
+        Spree::ShipmentMailer.shipped_email(@shipment.id).deliver_later(wait: 4.hours) if Spree::Config.send_shipped_email
 
         # TODO: state machine is bypassed above...is there a good reason?
         @shipment.trigger_on_shipped if @shipment.respond_to? :trigger_on_shipped
