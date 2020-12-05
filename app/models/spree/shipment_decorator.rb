@@ -2,7 +2,7 @@ Spree::Shipment.class_eval do
   scope :exportable, -> {
   joins(:order)
     .where('spree_shipments.state != ?', 'pending')
-    .where("#{Spree::Order.table_name}.completed_at > ?", Time.new(2018, 1, 1))
+    .where("#{Spree::Order.table_name}.completed_at > ?", Time.new(2020, 1, 1))
   }
 
   def self.between(from, to)
