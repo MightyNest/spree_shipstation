@@ -31,6 +31,9 @@ module Spree
         @shipment.inventory_units.each &:ship!
         @shipment.touch :shipped_at
 
+        # Delay sending customers the shipment notification email for 4 hours.
+        # Previously, this delay was set up in the ShipStation system, the HTTP POST
+        # notification to /shipnotify was delayed by 4 hours.
         Spree::ShipmentMailer.shipped_email(@shipment.id).deliver_later(wait: 4.hours) if Spree::Config.send_shipped_email
 
         # TODO: state machine is bypassed above...is there a good reason?
