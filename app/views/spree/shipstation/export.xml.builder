@@ -31,7 +31,7 @@ xml.instruct!
 xml.Orders(pages: ((1.0*@shipments.total_count)/@page_size).ceil) {
   @shipments.each do |shipment|
     order = shipment.order
-    Rails.logger.error "SS Order Number: #{order.number}"
+    Rails.logger.error "SS Order Number: #{order.number}" if ENV["SHIPSTATION_DEBUG"] == "true"
 
     xml.Order {
       xml.OrderID        shipment.id
