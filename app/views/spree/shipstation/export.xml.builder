@@ -37,7 +37,7 @@ xml.Orders(pages: ((1.0*@shipments.total_count)/@page_size).ceil) {
       xml.OrderID        shipment.id
       xml.OrderNumber    Spree::Config.shipstation_number == :order ? order.number : shipment.number
       xml.OrderDate      (order.completed_at || order.created_at).utc.strftime(date_format)
-      xml.OrderStatus    shipment.state
+      xml.OrderStatus    shipment.shipstation_order_status
       xml.LastModified   [order.completed_at, shipment.updated_at].max.utc.strftime(date_format)
       xml.ShippingMethod shipment.shipping_method.try(:name)
       xml.OrderTotal     order.total
