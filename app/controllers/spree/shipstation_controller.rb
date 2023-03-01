@@ -5,8 +5,8 @@ module Spree
     #include BasicSslAuthentication
     include Spree::DateParamHelper
 
-    skip_before_filter :verify_authenticity_token
-    before_filter :authenticate
+    skip_before_action :verify_authenticity_token
+    before_action :authenticate
 
     def authenticate
       authenticate_or_request_with_http_basic('Authentication Required') do |username, password|

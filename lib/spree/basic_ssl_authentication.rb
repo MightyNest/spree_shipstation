@@ -4,7 +4,7 @@ module Spree
 
     included do
       ssl_required
-      before_filter :authenticate
+      before_action :authenticate
     end
 
   protected
