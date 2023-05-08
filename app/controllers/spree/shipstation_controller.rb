@@ -32,7 +32,8 @@ module Spree
         order.save!
       end
 
-      Ns::Jobs::ShipmentShippedWorker.perform_async(number)
+      # Removing this job since netsuite will get updated in an after save hook now
+      # Ns::Jobs::ShipmentShippedWorker.perform_async(number)
 
       if notice.apply
         @text = 'success'
